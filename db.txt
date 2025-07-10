@@ -1,0 +1,62 @@
+CREATE TABLE Produto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    quantidade_estoque INT NOT NULL,
+    categoria VARCHAR(100),
+    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Funcionario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    cargo VARCHAR(100),
+    data_contratacao DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Cliente (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    telefone VARCHAR(20),
+    endereco TEXT,
+    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Pedido (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'Pendente',
+    total DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES Cliente(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE PedidoItem (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    produto_id INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (pedido_id) REFERENCES Pedido(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (produto_id) REFERENCES Produto(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE Venda (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    funcionario_id INT DEFAULT NULL,
+    data_venda DATETIME DEFAULT CURRENT_TIMESTAMP,
+    valor_total DECIMAL(10,2) NOT NULL,
+    forma_pagamento VARCHAR(50),
+    FOREIGN KEY (pedido_id) REFERENCES Pedido(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (funcionario_id) REFERENCES Funcionario(id)
+        ON DELETE SET NULL
+);
